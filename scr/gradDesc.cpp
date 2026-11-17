@@ -1,37 +1,23 @@
+#include <iostream>
 #include <cmath>
-
-class Function{
-    
-    public:
-    virtual double f(double x, double y) = 0;     //Valore della funzione nel punto (x,y)
-    virtual double* grad(double x, double y) = 0;    //Calcolo del gradiente nel punto (x,y)
-    
-    double normaGrad(double* grad);    //Calcolo della norma del gradiente nel punto (x,y)
-
-};
-
-class Function1 : public Function{
-    double f(double x, double y) override;
-    double* grad(double x, double y) override;    
-
-};
+#include "gradDesc.h"
 
 double Function::normaGrad(double* grad){
     return (sqrt(grad[0]*grad[0]+grad[1]*grad[1]));
 }
 
-    // Funzione 1
-    double Function1::f(double x, double y){
-        return (x*x + y*y)/2;
-    }
+// Funzione 1
+double Function1::value(double x, double y){
+    return (x*x + y*y)/2;
+}
 
-    double* Function1::grad(double x, double y){
-        return (x);
-    }
+double* Function1::grad(double x, double y){
+    return (x); 
+}
 
 
 // Funzione 2
-double Function1::f(double x, double y){
+double Function1::value(double x, double y){
     return (x*x + 16*y*y)/2;
 }
 
@@ -42,12 +28,12 @@ double* Function1::grad(double x, double y){
 
 
 // Funzione 1
-double Function1::f(double x, double y){
+double Function1::value(double x, double y){
     return (x*x + y*y)/2;
 }
 
 double* Function1::grad(double x, double y){
-    return (x);
+    return 
 }
 
 
@@ -55,10 +41,42 @@ double* Function1::grad(double x, double y){
 class gradDesc{
 
     protected:
-    double N,T;
+    int N;
+    double T;
+    double m;
 
     public: 
-    double spostamento(double x, double y, double passo);        //Calcolo dello spostamento verso il passo successivo
-    bool checkGrad(double* grad);      //Controlla se il gradiente è = 0 o inferiore della soglia T
+    void spostamento(double &x, double &y, Function& f, double passo);        //Calcolo dello spostamento verso il passo successivo
+    void iterazione(Function& f, double* grad);                          //Controlla se il gradiente è = 0 o inferiore della soglia T
+    bool checkGrad(double* grad);
+
+
+    void iterazione(double &x, double &y, Function& f, double passo){
+        int i=0;
+        double* grad = f.grad(x,y);
+        double error;
+
+        while(!checkGrad(f, grad, i)){
+            if(i%10 == 0){
+                std::cout << i << "      ( " << x << ", " << y << ")" << "      ( " << f.value(x,y) << " )" << "      err= " << error << "      " << f.normaGrad(grad);
+            }
+            x -= passo*grad[0];
+            y -= passo*grad[1];
+
+            delete[] grad;
+            grad = f.grad(x,y);
+            error = double(f.value(x,y)) - double(m);
+            
+            i++;
+        }
+        if((i%10)!=0){
+                std::cout << i << "      ( " << x << ", " << y << ")" << "      ( " << f.value(x,y) << " )" << "      err= " << error << "      " << f.normaGrad(grad);
+            }
+        delete[] grad;
+    }
+    
+    bool checkGrad(Function& f, double* grad,int i){
+        return (i<N && f.normaGrad(grad)>=T);
+    }
 
 };
