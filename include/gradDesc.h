@@ -1,61 +1,23 @@
+#ifndef GRADDSEC_H
+#define GRADDSEC_H
+#include "../include/Function.h"
 
-class Function{
-    public:
-    
-    virtual double value(double x, double y) = 0;     //Valore della funzione nel punto (x,y)
+class gradDesc{
 
-    virtual double* grad(double x, double y) = 0;    //Calcolo del gradiente nel punto (x,y)
+    protected:
+    int N;
+    double T;
 
-    virtual double minimo() = 0;            //Restituisce valore di contollo 
+    public: 
 
-    double normaGrad(double* grad);    //Calcolo della norma del gradiente nel punto (x,y)
+    //Costrutore per inizializzare le variabili globali 
+    gradDesc(int itr, double sgl);
 
+    //Calcolo dello spostamento verso il passo successivo                         //Controlla se il gradiente è = 0 o inferiore della soglia T
+    void iterazione(double &x, double &y, Function& f, double passo); 
+
+    //Controllo del gradiente
+    bool checkGrad(Function& f, std::array<double,2> grad, int i);
 };
 
-class Function1 : public Function{
-    double value(double x, double y) override;
-    
-    double* grad(double x, double y) override;    
-};
-
-class Function2 : public Function{
-    double value(double x, double y) override;
-    
-    double* grad(double x, double y) override;    
-};
-
-class Function3 : public Function{
-    double value(double x, double y) override;
-    
-    double* grad(double x, double y) override;    
-};
-
-class Function4 : public Function{
-    double value(double x, double y) override;
-    
-    double* grad(double x, double y) override;    
-};
-
-class Function5 : public Function{
-    double value(double x, double y) override;
-    
-    double* grad(double x, double y) override;    
-};
-
-class Function6 : public Function{
-    double value(double x, double y) override;
-    
-    double* grad(double x, double y) override;    
-};
-
-class Function7 : public Function{
-    double va(double x, double y) override;
-    
-    double* grad(double x, double y) override;    
-};
-
-class Function8 : public Function{
-    double value(double x, double y) override;
-    
-    double* grad(double x, double y) override;    
-};
+#endif //GRADDESC_H
